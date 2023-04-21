@@ -25,13 +25,7 @@ public class EnvioController {
         Envio envio = envioRepository.findByIdJPQL(id);
         return new ResponseEntity<Envio>(envio, HttpStatus.OK);
     }
-    /*
-    @GetMapping("/envios/{direccion}")
-    public ResponseEntity<List<Envio>> findByDireccionEnvioJPQL(@PathVariable("direccion") String direccion){
-        List<Envio> envios = envioRepository.findByDireccionEnvioJPQL(direccion);
-        return new ResponseEntity<List<Envio>>(envios, HttpStatus.OK);
-    }
-     */
+
     @PostMapping("/envios")
     public ResponseEntity<Envio> createEnvio(@RequestBody Envio envio){
         Envio newEnvio =
