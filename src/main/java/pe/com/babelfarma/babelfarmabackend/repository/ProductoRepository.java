@@ -1,6 +1,7 @@
 package pe.com.babelfarma.babelfarmabackend.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import pe.com.babelfarma.babelfarmabackend.entities.Categoria;
 import pe.com.babelfarma.babelfarmabackend.entities.Producto;
 
@@ -9,8 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface ProductoRepository extends JpaRepository<Producto, Long>{
-    @Query(value="SELECT * FROM productos a inner join farmacias_productos b on a.id = b.producto_id where nombre like '%'||?1||'%'", nativeQuery = true)
-    List<Producto> findProductoByNameSQL(String producto);
+
+    @Query(value = """
+    SELECT p FROM Producto p 
+    INNER JOIN FarmaciaProducto fp ON p.id = fp.productoId
+         WHERE  LOWER(p.nombre) LIKE LOWER(concat('%', :producto, '%'))\s
+    """)
+    List<Producto> findProductoByNameSQL(@Param("producto") String producto);
 
     @Query("select p from Producto p inner join FarmaciaProducto b on p.id = b.productoId where p.categoria.categoria = ?1")
     List<Producto> findProductoByCategoria(String categoria);

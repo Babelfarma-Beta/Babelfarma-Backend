@@ -11,28 +11,86 @@ public class Venta {
     private Long id;
     private Date fecha;
 
-    @ManyToOne
-    @JoinColumn(name="id_cliente", nullable=false)
-    private Cliente cliente;
+    @Column(name="id_cliente", nullable=false)
+    private Long idCliente;
 
-    @ManyToOne
-    @JoinColumn(name="id_farmacia", nullable=false)
-    private Farmacia farmacia;
+    @Column(name="id_farmacia", nullable=false)
+    private Long idFarmacia;
 
-    @ManyToOne
-    @JoinColumn(name="id_producto", nullable=false)
-    private Producto producto;
+    @Column(name="id_producto", nullable=false)
+    private Long idProducto;
 
-    public Venta() {
+    @Column(name="product_name", nullable=false)
+    private String productName;
+
+    private float precioUnit;
+
+    private int cantidad;
+
+    private float precioTotal;
+
+    public Venta(Date fecha, Long idCliente, Long idFarmacia, Long idProducto, String productName, float precioUnit, int cantidad, float precioTotal) {
+        this.fecha = fecha;
+        this.idCliente = idCliente;
+        this.idFarmacia = idFarmacia;
+        this.idProducto = idProducto;
+        this.productName= productName;
+        this.precioUnit = precioUnit;
+        this.cantidad = cantidad;
+        this.precioTotal = precioTotal;
+    }
+
+    public Venta(){
 
     }
 
-    public Producto getProducto() {
-        return producto;
+    public Long getId() {
+        return id;
     }
 
-    float precioUnit;
-    int cantidad;
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public Long getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(Long idCliente) {
+        this.idCliente = idCliente;
+    }
+
+    public Long getIdFarmacia() {
+        return idFarmacia;
+    }
+
+    public void setIdFarmacia(Long idFarmacia) {
+        this.idFarmacia = idFarmacia;
+    }
+
+    public Long getIdProducto() {
+        return idProducto;
+    }
+
+    public void setIdProducto(Long idProducto) {
+        this.idProducto = idProducto;
+    }
 
     public float getPrecioUnit() {
         return precioUnit;
@@ -56,57 +114,5 @@ public class Venta {
 
     public void setPrecioTotal(float precioTotal) {
         this.precioTotal = precioTotal;
-    }
-
-    float precioTotal;
-
-    public void setProducto(Producto producto) {
-        this.producto = producto;
-    }
-
-    public Venta( Date fecha, Cliente cliente, Farmacia farmacia, Producto producto, float precioUnit, int cantidad, float precioTotal) {
-        this.fecha = fecha;
-        this.cliente = cliente;
-        this.farmacia = farmacia;
-        this.producto = producto;
-        this.precioUnit = precioUnit;
-        this.cantidad = cantidad;
-        this.precioTotal = precioTotal;
-    }
-
-    public Farmacia getFarmacia() {
-        return farmacia;
-    }
-
-    public Long getFarmaciaId(){
-        return farmacia.getId();
-    }
-
-    public void setFarmacia(Farmacia farmacia) {
-        this.farmacia = farmacia;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
     }
 }

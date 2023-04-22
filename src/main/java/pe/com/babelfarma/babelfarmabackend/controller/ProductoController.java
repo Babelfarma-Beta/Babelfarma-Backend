@@ -87,29 +87,6 @@ public class ProductoController {
         return new ResponseEntity<Producto>(producto, HttpStatus.OK);
     }
 
-/*    @PostMapping("/productosregistrados/{idFarmacia}")
-    public ResponseEntity<Producto> createProducto(
-            @PathVariable("idFarmacia") Long idFarmacia,
-            @RequestBody Producto producto){
-        Producto newProducto=
-                productoRepository.save(
-                        new Producto(
-                                producto.getNombre(),
-                                producto.getStock(),
-                                producto.getPrecio(),
-                                producto.getDescripcion(),
-                                producto.getCategoria()
-                        )
-                );
-        farmaciaProductoRepository.save(
-                new FarmaciaProducto(
-                        idFarmacia,
-                        newProducto.getId()
-                )
-        );
-
-        return new ResponseEntity<Producto>(newProducto, HttpStatus.CREATED);
-    }*/
     @PostMapping("/productosregistrados/{idFarmacia}")
     @Transactional
     public ResponseEntity<Producto> createProducto(
@@ -184,7 +161,7 @@ public class ProductoController {
                 productos.add(producto);
             });
         }
-        return new ResponseEntity<List<Producto>>(productos, HttpStatus.OK);
+        return new ResponseEntity<>(productos, HttpStatus.OK);
     }
 
 
@@ -203,7 +180,7 @@ public class ProductoController {
                 productos.add(p);
             });
         }
-        return new ResponseEntity<List<Producto>>(productos, HttpStatus.OK);
+        return new ResponseEntity<>(productos, HttpStatus.OK);
     }
 
     @GetMapping("/productos/stock")

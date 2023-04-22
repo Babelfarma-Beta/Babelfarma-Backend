@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import pe.com.babelfarma.babelfarmabackend.entities.Farmacia;
+import pe.com.babelfarma.babelfarmabackend.entities.VentaView;
 import pe.com.babelfarma.babelfarmabackend.exception.ResourceNotFoundException;
 import pe.com.babelfarma.babelfarmabackend.repository.VentaRepository;
 import pe.com.babelfarma.babelfarmabackend.entities.Venta;
@@ -25,22 +26,22 @@ public class VentaController {
     }
     @Transactional(readOnly=true)
     @GetMapping("/ventas/buscarporfarmacia/{farmaciaId}")
-    public ResponseEntity<List<Venta>> getVentasByFarmaciaId(
+    public ResponseEntity<List<VentaView>> getVentasByFarmaciaId(
             @PathVariable("farmaciaId") Long id
     ){
-        List<Venta> ventas = ventaRepository.findByFarmaciaId(id);
+        List<VentaView> ventas = ventaRepository.findByFarmaciaId(id);
 
-        return new ResponseEntity<List<Venta>>(ventas, HttpStatus.OK);
+        return new ResponseEntity<List<VentaView>>(ventas, HttpStatus.OK);
     }
 
     @Transactional(readOnly=true)
     @GetMapping("/ventas/buscarporcliente/{nombre}/{idFarmacia}")
-    public ResponseEntity<List<Venta>> getVentasByNombreCliente(
+    public ResponseEntity<List<VentaView>> getVentasByNombreCliente(
             @PathVariable("nombre") String nombre,
             @PathVariable("idFarmacia") Long idFarmacia
     ){
-        List<Venta> ventas = ventaRepository.findByNombreCliente(nombre,idFarmacia);
-        return new ResponseEntity<List<Venta>>(ventas, HttpStatus.OK);
+        List<VentaView> ventas = ventaRepository.findByNombreCliente(nombre,idFarmacia);
+        return new ResponseEntity<List<VentaView>>(ventas, HttpStatus.OK);
     }
 
     @Transactional(readOnly=true)
@@ -54,12 +55,12 @@ public class VentaController {
 
     @Transactional(readOnly=true)
     @GetMapping("/ventas/buscarpormes/{mes}/{idFarmacia}")
-    public ResponseEntity<List<Venta>> getVentasByMes(
+    public ResponseEntity<List<VentaView>> getVentasByMes(
             @PathVariable("mes") int mes,
             @PathVariable("idFarmacia") Long idFarmacia
     ){
-        List<Venta> ventas = ventaRepository.findByMes(mes,idFarmacia);
-        return new ResponseEntity<List<Venta>>(ventas, HttpStatus.OK);
+        List<VentaView> ventas = ventaRepository.findByMes(mes,idFarmacia);
+        return new ResponseEntity<List<VentaView>>(ventas, HttpStatus.OK);
     }
 
 
@@ -68,9 +69,10 @@ public class VentaController {
         Venta newVenta =
                 ventaRepository.save(new Venta(
                                 venta.getFecha(),
-                                venta.getCliente(),
-                                venta.getFarmacia(),
-                                venta.getProducto(),
+                                venta.getIdCliente(),
+                                venta.getIdFarmacia(),
+                                venta.getIdProducto(),
+                                venta.getProductName(),
                                 venta.getPrecioUnit(),
                                 venta.getCantidad(),
                                 venta.getPrecioTotal()
