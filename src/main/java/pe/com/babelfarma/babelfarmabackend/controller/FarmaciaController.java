@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import pe.com.babelfarma.babelfarmabackend.entities.Cliente;
@@ -20,6 +21,8 @@ public class FarmaciaController {
 
     @Autowired
     private FarmaciaRepository farmaciaRepository;
+
+    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @GetMapping("/farmacias")
     public ResponseEntity<List<Farmacia>> getAllFarmacias(){
@@ -83,21 +86,30 @@ public class FarmaciaController {
     }
     @PostMapping("/farmacias")
     public ResponseEntity<Farmacia> createFarmacia(@RequestBody Farmacia farmacia){
-        Farmacia newFarmacia =
-                farmaciaRepository.save(new Farmacia(
-                        farmacia.getRuc(),
-                        farmacia.getNombresDuenio(),
-                        farmacia.getApellidosDuenio(),
-                        farmacia.getNombreEstablecimiento(),
-                        farmacia.getDireccion(),
-                        farmacia.getCorreoContacto(),
-                        farmacia.getTelefonoContacto(),
-                        farmacia.getDistrito(),
-                        farmacia.getRole(),
-                        farmacia.getContraseña()
-                        )
-                );
-        return new ResponseEntity<Farmacia>(newFarmacia, HttpStatus.CREATED);
+
+        String hashedPassword = passwordEncoder.encode(farmacia.getContraseña());
+        farmacia.setContraseña(hashedPassword);
+        String correo = farmacia.getCorreoContacto();
+        if(farmaciaRepository.existsFarmaciaByCorreoContacto(correo)) {
+            return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
+        }
+        else {
+            Farmacia newFarmacia =
+                    farmaciaRepository.save(new Farmacia(
+                                    farmacia.getRuc(),
+                                    farmacia.getNombresDuenio(),
+                                    farmacia.getApellidosDuenio(),
+                                    farmacia.getNombreEstablecimiento(),
+                                    farmacia.getDireccion(),
+                                    farmacia.getCorreoContacto(),
+                                    farmacia.getTelefonoContacto(),
+                                    farmacia.getDistrito(),
+                                    farmacia.getRole(),
+                                    farmacia.getContraseña()
+                            )
+                    );
+            return new ResponseEntity<Farmacia>(newFarmacia, HttpStatus.CREATED);
+        }
     }
     @PutMapping("/farmacias/{id}")
     public ResponseEntity<Farmacia> updateFarmacia(
@@ -122,5 +134,25 @@ public class FarmaciaController {
     public ResponseEntity<HttpStatus> deleteFarmacia(@PathVariable("id") Long id){
         farmaciaRepository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping("/farmacias/correo/{correo}/contraseña/{contraseña}")
+    public ResponseEntity<Farmacia> findByCorreoAndContraseña(@PathVariable("correo") String correo,
+                                                             @PathVariable("contraseña") String contraseña){
+
+        Farmacia farmacia = farmaciaRepository.findByCorreoContacto(correo);
+
+        if (farmacia == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        if (passwordEncoder.matches(contraseña, farmacia.getContraseña())) {
+            return new ResponseEntity<>(farmacia, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 }

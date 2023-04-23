@@ -2,10 +2,8 @@ package pe.com.babelfarma.babelfarmabackend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import pe.com.babelfarma.babelfarmabackend.entities.Farmacia;
-import pe.com.babelfarma.babelfarmabackend.entities.Producto;
-
-import javax.transaction.Transactional;
 import java.util.List;
 
 public interface FarmaciaRepository extends JpaRepository<Farmacia, Long> {
@@ -33,6 +31,10 @@ public interface FarmaciaRepository extends JpaRepository<Farmacia, Long> {
 
   @Query(value="select * from farmacias f inner join farmacias_productos fp on f.id = fp.farmacia_id inner join productos p on fp.producto_id = p.id where p.id=?1", nativeQuery = true)
   Farmacia farmaciaPorProducto(Long id);
+
+  Farmacia findByCorreoContacto(@Param("correoContacto") String correoContacto);
+
+  boolean existsFarmaciaByCorreoContacto(@Param("correoContacto") String correoContacto);
 
 
 }
