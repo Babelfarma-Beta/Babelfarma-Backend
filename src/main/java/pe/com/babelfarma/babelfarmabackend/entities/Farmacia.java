@@ -43,8 +43,6 @@ public class Farmacia {
                     inverseJoinColumns = @JoinColumn(name = "producto_id", referencedColumnName = "id",nullable = false))
     List<Producto> productos = new ArrayList<>();
 
-
-
     public Farmacia() {
     }
 

@@ -27,12 +27,6 @@ import java.util.List;
 @RequestMapping("/api")
 
 public class ProductoController {
-    //@GetMapping -> get
-    //@PostMapping -> post
-    //@PutMapping -> put
-    //@DeleteMapping -> delete
-
-    //Inyectar dependencia
 
     @Autowired
     private CategoriaRepository categoriaRepository;

@@ -125,10 +125,13 @@ public class FarmaciaController {
         farmaciaUpdate.setCorreoContacto(farmacia.getCorreoContacto());
         farmaciaUpdate.setTelefonoContacto(farmacia.getTelefonoContacto());
         farmaciaUpdate.setDistrito(farmacia.getDistrito());
-        farmaciaUpdate.setContraseña(farmacia.getContraseña());
         farmaciaUpdate.setRole(farmacia.getRole());
+        String password = farmacia.getContraseña();
+        if (password != null && !password.isEmpty() && !password.equals(farmaciaUpdate.getContraseña())) {
+            farmaciaUpdate.setContraseña(passwordEncoder.encode(password));
+        }
 
-        return new ResponseEntity<Farmacia>(farmaciaRepository.save(farmaciaUpdate), HttpStatus.OK);
+        return new ResponseEntity<>(farmaciaRepository.save(farmaciaUpdate), HttpStatus.OK);
     }
     @DeleteMapping("/farmacias/{id}")
     public ResponseEntity<HttpStatus> deleteFarmacia(@PathVariable("id") Long id){

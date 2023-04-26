@@ -112,10 +112,14 @@ public class ClienteController {
         clienteUpdate.setDireccion(cliente.getDireccion());
         clienteUpdate.setDistrito(cliente.getDistrito());
         clienteUpdate.setRole(cliente.getRole());
-        clienteUpdate.setContraseña(cliente.getContraseña());
+
+        String password = cliente.getContraseña();
+        if (password != null && !password.isEmpty() && !password.equals(clienteUpdate.getContraseña())) {
+            clienteUpdate.setContraseña(passwordEncoder.encode(password));
+        }
+
         return new ResponseEntity<>(clienteRepository.save(clienteUpdate), HttpStatus.OK);
     }
-
 
 
 
