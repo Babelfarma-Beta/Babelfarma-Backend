@@ -12,57 +12,56 @@ public interface VentaRepository
     extends JpaRepository<Venta, Long> {
     List<Venta> findById(long id);
 
-    @Query(value = """
-        SELECT new pe.com.babelfarma.babelfarmabackend.entities.VentaView(
+   @Query(value = """
+        SELECT NEW pe.com.babelfarma.babelfarmabackend.entities.VentaView(
             v.id,
             v.fecha,
-            CONCAT(c.nombres, ' ', c.apellidoPaterno, ' ', c.apellidoMaterno),
+            CONCAT(v.idCliente.nombres, ' ', v.idCliente.apellidoPaterno, ' ', v.idCliente.apellidoMaterno),
             v.productName,
             v.precioUnit,
             v.cantidad,
             v.precioTotal
-        )
+            )
         FROM Venta v
-        INNER JOIN Cliente c ON v.idCliente=c.id
-        WHERE v.idFarmacia= :id
+        WHERE v.idFarmacia.id= :id
      """)
     List<VentaView> findByFarmaciaId(@Param("id") Long id);
 
-    @Query(value = """
-        SELECT new pe.com.babelfarma.babelfarmabackend.entities.VentaView(
+   @Query(value = """
+        SELECT NEW pe.com.babelfarma.babelfarmabackend.entities.VentaView(
             v.id,
             v.fecha,
-            CONCAT(c.nombres, ' ', c.apellidoPaterno, ' ', c.apellidoMaterno),
+            CONCAT(v.idCliente.nombres, ' ', v.idCliente.apellidoPaterno, ' ', v.idCliente.apellidoMaterno),
             v.productName,
             v.precioUnit,
             v.cantidad,
             v.precioTotal
-        )
+            )
         FROM Venta v
-        INNER JOIN Cliente c ON v.idCliente=c.id
-         WHERE LOWER(c.nombres) LIKE LOWER(concat('%', :nombre, '%'))\s
-                OR LOWER(c.apellidoPaterno) LIKE LOWER(concat('%', :nombre, '%'))\s
-                OR LOWER(c.apellidoMaterno) LIKE LOWER(concat('%', :nombre, '%'))
-                AND v.idFarmacia= :id
+         WHERE LOWER(v.idCliente.nombres) LIKE LOWER(concat('%', :nombre, '%'))\s
+                OR LOWER(v.idCliente.apellidoPaterno) LIKE LOWER(concat('%', :nombre, '%'))\s
+                OR LOWER(v.idCliente.apellidoMaterno) LIKE LOWER(concat('%', :nombre, '%'))
+                AND v.idFarmacia.id = :id
      """)
-    List<VentaView> findByNombreCliente(@Param("nombre") String nombre,@Param("id") Long id);
+   List<VentaView> findByNombreCliente(@Param("nombre") String nombre,@Param("id") Long id);
 
-    @Query(value="select v.* from venta v inner join cliente c on v.id_cliente = c.id  where c.id=?1", nativeQuery=true)
+     @Query(value="select v.* from venta v inner join cliente c on v.id_cliente = c.id  where c.id=?1", nativeQuery=true)
     List<Venta> findByIdCliente(Long id);
 
-    @Query(value = """
-        SELECT new pe.com.babelfarma.babelfarmabackend.entities.VentaView(
+     @Query(value = """
+        SELECT NEW pe.com.babelfarma.babelfarmabackend.entities.VentaView(
             v.id,
             v.fecha,
-            CONCAT(c.nombres, ' ', c.apellidoPaterno, ' ', c.apellidoMaterno),
+            CONCAT(v.idCliente.nombres, ' ', v.idCliente.apellidoPaterno, ' ', v.idCliente.apellidoMaterno),
             v.productName,
             v.precioUnit,
             v.cantidad,
             v.precioTotal
-        )
+            )
+
         FROM Venta v
-        INNER JOIN Cliente c ON v.idCliente=c.id
-        WHERE EXTRACT(month from v.fecha)=:month AND v.idFarmacia= :id
+        WHERE EXTRACT(month from v.fecha)=:month AND v.idFarmacia.id= :id
      """)
     List<VentaView> findByMes(int month, Long id);
+
 }

@@ -11,14 +11,17 @@ public class Venta {
     private Long id;
     private Date fecha;
 
-    @Column(name="id_cliente", nullable=false)
-    private Long idCliente;
+    @OneToOne
+    @JoinColumn(name = "id_cliente")
+    private Cliente idCliente;
 
-    @Column(name="id_farmacia", nullable=false)
-    private Long idFarmacia;
+    @OneToOne
+    @JoinColumn(name = "id_farmacia")
+    private Farmacia idFarmacia;
 
-    @Column(name="id_producto", nullable=false)
-    private Long idProducto;
+    @OneToOne
+    @JoinColumn(name = "id_producto")
+    private Producto idProducto;
 
     @Column(name="product_name", nullable=false)
     private String productName;
@@ -29,7 +32,7 @@ public class Venta {
 
     private float precioTotal;
 
-    public Venta(Date fecha, Long idCliente, Long idFarmacia, Long idProducto, String productName, float precioUnit, int cantidad, float precioTotal) {
+    public Venta(Date fecha, Cliente idCliente, Farmacia idFarmacia, Producto idProducto, String productName, float precioUnit, int cantidad, float precioTotal) {
         this.fecha = fecha;
         this.idCliente = idCliente;
         this.idFarmacia = idFarmacia;
@@ -68,27 +71,27 @@ public class Venta {
         this.fecha = fecha;
     }
 
-    public Long getIdCliente() {
+    public Cliente getIdCliente() {
         return idCliente;
     }
 
-    public void setIdCliente(Long idCliente) {
+    public void setIdCliente(Cliente idCliente) {
         this.idCliente = idCliente;
     }
 
-    public Long getIdFarmacia() {
+    public Farmacia getIdFarmacia() {
         return idFarmacia;
     }
 
-    public void setIdFarmacia(Long idFarmacia) {
+    public void setIdFarmacia(Farmacia idFarmacia) {
         this.idFarmacia = idFarmacia;
     }
 
-    public Long getIdProducto() {
+    public Producto getIdProducto() {
         return idProducto;
     }
 
-    public void setIdProducto(Long idProducto) {
+    public void setIdProducto(Producto idProducto) {
         this.idProducto = idProducto;
     }
 

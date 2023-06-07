@@ -1,26 +1,16 @@
 package pe.com.babelfarma.babelfarmabackend.entities;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import java.util.Date;
+import java.util.*;
 
 public class VentaView {
-
     private Long id;
-
     private Date fecha;
-
     private String cliente;
-
     private String producto;
-
     private float precioUnit;
-
     private int cantidad;
-
     private float precioTotal;
+
 
     public VentaView(Long id, Date fecha, String cliente, String producto, float precioUnit, int cantidad, float precioTotal) {
         this.id = id;
@@ -30,9 +20,6 @@ public class VentaView {
         this.precioUnit = precioUnit;
         this.cantidad = cantidad;
         this.precioTotal = precioTotal;
-    }
-
-    public VentaView() {
     }
 
     public Long getId() {
@@ -90,4 +77,5 @@ public class VentaView {
     public void setPrecioTotal(float precioTotal) {
         this.precioTotal = precioTotal;
     }
+
 }

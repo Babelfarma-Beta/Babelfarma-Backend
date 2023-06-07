@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import pe.com.babelfarma.babelfarmabackend.entities.Farmacia;
 import pe.com.babelfarma.babelfarmabackend.entities.VentaView;
 import pe.com.babelfarma.babelfarmabackend.exception.ResourceNotFoundException;
 import pe.com.babelfarma.babelfarmabackend.repository.VentaRepository;
@@ -22,7 +21,7 @@ public class VentaController {
     @GetMapping("/ventas")
     public ResponseEntity<List<Venta>> getAllVentas(){
         List<Venta> ventas = ventaRepository.findAll();
-        return new ResponseEntity<List<Venta>>(ventas, HttpStatus.OK);
+        return new ResponseEntity<>(ventas, HttpStatus.OK);
     }
     @Transactional(readOnly=true)
     @GetMapping("/ventas/buscarporfarmacia/{farmaciaId}")
@@ -31,7 +30,7 @@ public class VentaController {
     ){
         List<VentaView> ventas = ventaRepository.findByFarmaciaId(id);
 
-        return new ResponseEntity<List<VentaView>>(ventas, HttpStatus.OK);
+        return new ResponseEntity<>(ventas, HttpStatus.OK);
     }
 
     @Transactional(readOnly=true)
@@ -41,7 +40,7 @@ public class VentaController {
             @PathVariable("idFarmacia") Long idFarmacia
     ){
         List<VentaView> ventas = ventaRepository.findByNombreCliente(nombre,idFarmacia);
-        return new ResponseEntity<List<VentaView>>(ventas, HttpStatus.OK);
+        return new ResponseEntity<>(ventas, HttpStatus.OK);
     }
 
     @Transactional(readOnly=true)
@@ -50,7 +49,7 @@ public class VentaController {
             @PathVariable("idCliente") Long idCliente
     ){
         List<Venta> ventas = ventaRepository.findByIdCliente(idCliente);
-        return new ResponseEntity<List<Venta>>(ventas, HttpStatus.OK);
+        return new ResponseEntity<>(ventas, HttpStatus.OK);
     }
 
     @Transactional(readOnly=true)
@@ -60,9 +59,8 @@ public class VentaController {
             @PathVariable("idFarmacia") Long idFarmacia
     ){
         List<VentaView> ventas = ventaRepository.findByMes(mes,idFarmacia);
-        return new ResponseEntity<List<VentaView>>(ventas, HttpStatus.OK);
+        return new ResponseEntity<>(ventas, HttpStatus.OK);
     }
-
 
     @PostMapping("/ventas")
     public ResponseEntity<Venta> createVenta(@RequestBody Venta venta){
@@ -78,11 +76,9 @@ public class VentaController {
                                 venta.getPrecioTotal()
                         )
                 );
-        return new ResponseEntity<Venta>(newVenta, HttpStatus.CREATED);
-
+        return new ResponseEntity<>(newVenta, HttpStatus.CREATED);
     }
 
-    //put
     @PutMapping("/ventas/{id}")
     public ResponseEntity<Venta> updateVenta(
             @PathVariable("id") Long id,
@@ -90,9 +86,10 @@ public class VentaController {
         Venta ventaUpdate = ventaRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("No se encontró el cliente con id: " + id));
         ventaUpdate.setFecha(venta.getFecha());
-        return new ResponseEntity<Venta>(ventaRepository.save(ventaUpdate), HttpStatus.OK);
+        return new ResponseEntity<>(ventaRepository.save(ventaUpdate), HttpStatus.OK);
     }
-    //deletee
+
+
     @DeleteMapping("/ventas/{id}")
     public ResponseEntity<HttpStatus> deleteVenta(@PathVariable("id") Long id){
         ventaRepository.deleteById(id);
