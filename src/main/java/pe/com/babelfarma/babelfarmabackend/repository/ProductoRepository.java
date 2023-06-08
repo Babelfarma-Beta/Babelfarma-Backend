@@ -9,16 +9,17 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface ProductoRepository extends JpaRepository<Producto, Long>{
+public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
     @Query(value = """
     SELECT p FROM Producto p 
     INNER JOIN FarmaciaProducto fp ON p.id = fp.productoId
-         WHERE  LOWER(p.nombre) LIKE LOWER(concat('%', :producto, '%'))\s
+         WHERE  LOWER(p.nombre) LIKE LOWER(concat('%', :producto, '%'))
+         AND p.status= '1'
     """)
     List<Producto> findProductoByNameSQL(@Param("producto") String producto);
 
-    @Query("select p from Producto p inner join FarmaciaProducto b on p.id = b.productoId where p.categoria.categoria = ?1")
+    @Query("select p from Producto p inner join FarmaciaProducto b on p.id = b.productoId where p.status= '1' and p.categoria.categoria = ?1")
     List<Producto> findProductoByCategoria(String categoria);
 
     @Query("select p from Producto p where p.id=?1")
@@ -30,14 +31,10 @@ public interface ProductoRepository extends JpaRepository<Producto, Long>{
     @Query("select p from Producto p order by p.stock desc")
     List<Producto> ListProductoStockJPQL();
 
-    @Query(value="select * from productos a inner join farmacias_productos b on a.id = b.producto_id order by a.precio asc", nativeQuery = true)
+    @Query(value="select * from productos a inner join farmacias_productos b on a.id = b.producto_id  where a.status= '1' order by a.precio asc", nativeQuery = true)
     List<Producto> ListProductoPrecioJPQL();
 
-
-    //Reporte de productos mas vendidos
-
-
-    @Query(value="select * from productos a inner join farmacias_productos b on a.id = b.producto_id inner join farmacias c on b.farmacia_id = c.id where c.id=?1", nativeQuery = true)
+    @Query(value="select * from productos a inner join farmacias_productos b on a.id = b.producto_id inner join farmacias c on b.farmacia_id = c.id where c.id=?1 order by a.id asc", nativeQuery = true)
     List<Producto> ListarProductoCadaFarmacia(long id);
 
     

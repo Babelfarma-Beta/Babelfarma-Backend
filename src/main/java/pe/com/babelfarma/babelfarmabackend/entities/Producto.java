@@ -22,24 +22,19 @@ public class Producto {
     @Column( name ="picture")
     private byte[] picture;
 
-    public byte[] getPicture() {
-        return picture;
-    }
-
-    public void setPicture(byte[] picture) {
-        this.picture = picture;
-    }
-
     @ManyToOne
     @JoinColumn(name = "id_categoria", nullable = false)
     private Categoria categoria;
 
-    public Producto(String nombre, int stock, double precio, String descripcion, Categoria categoria) {
+    private String status;
+
+    public Producto(String nombre, int stock, double precio, String descripcion, Categoria categoria, String status) {
         this.nombre = nombre;
         this.stock = stock;
         this.precio = precio;
         this.descripcion = descripcion;
         this.categoria = categoria;
+        this.status = status;
     }
 
     @OneToMany(mappedBy = "productoId",
@@ -47,6 +42,14 @@ public class Producto {
     private List<FarmaciaProducto> productos;
 
     public Producto() {
+    }
+
+    public byte[] getPicture() {
+        return picture;
+    }
+
+    public void setPicture(byte[] picture) {
+        this.picture = picture;
     }
 
     public Long getId() {
@@ -97,6 +100,11 @@ public class Producto {
         this.categoria = categoria;
     }
 
+    public String getStatus() {
+        return status;
+    }
 
-
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

@@ -50,8 +50,7 @@ public class ProductoController {
             });
         }
 
-        //List<Producto> productos=productoRepository.findAll();
-        return new ResponseEntity<List<Producto>>(productos, HttpStatus.OK);
+        return new ResponseEntity<>(productos, HttpStatus.OK);
     }
 
     @Transactional(readOnly=true)
@@ -71,7 +70,7 @@ public class ProductoController {
                 productos.add(p);
             });
         }
-        return new ResponseEntity<List<Producto>>(productos, HttpStatus.OK);
+        return new ResponseEntity<>(productos, HttpStatus.OK);
     }
 
     @GetMapping("/productos/id/{id}")
@@ -98,6 +97,7 @@ public class ProductoController {
         product.setPrecio(precio);
         product.setDescripcion(descripcion);
         product.setPicture(Util.compressZLib(picture.getBytes()));
+        product.setStatus("1");
 
         Categoria category = categoriaRepository.findById(categoryID)
                 .orElseThrow(()-> new ResourceNotFoundException("Not found category with id="+categoryID));
@@ -115,11 +115,8 @@ public class ProductoController {
                 )
         );
 
-        return new ResponseEntity<Producto>(newProducto, HttpStatus.CREATED);
+        return new ResponseEntity<>(newProducto, HttpStatus.CREATED);
     }
-
-
-
 
     @PutMapping("/productos/{id}")
     public ResponseEntity<Producto> updateProducto(@PathVariable("id") Long id,
@@ -131,7 +128,8 @@ public class ProductoController {
         productoUpdate.setPrecio(producto.getPrecio());
         productoUpdate.setDescripcion(producto.getDescripcion());
         productoUpdate.setCategoria(producto.getCategoria());
-        return new ResponseEntity<Producto>(productoRepository.save(productoUpdate), HttpStatus.OK);
+        productoUpdate.setStatus(producto.getStatus());
+        return new ResponseEntity<>(productoRepository.save(productoUpdate), HttpStatus.OK);
     }
 
     @DeleteMapping("/productos/{id}")
@@ -180,7 +178,7 @@ public class ProductoController {
     @GetMapping("/productos/stock")
     public ResponseEntity<List<Producto>> getProductosStock(){
         List<Producto> productos=productoRepository.ListProductoStockJPQL();
-        return new ResponseEntity<List<Producto>>(productos, HttpStatus.OK);
+        return new ResponseEntity<>(productos, HttpStatus.OK);
     }
 
     @Transactional(readOnly=true)
@@ -198,7 +196,7 @@ public class ProductoController {
                 productos.add(p);
             });
         }
-        return new ResponseEntity<List<Producto>>(productos, HttpStatus.OK);
+        return new ResponseEntity<>(productos, HttpStatus.OK);
     }
 
 }
