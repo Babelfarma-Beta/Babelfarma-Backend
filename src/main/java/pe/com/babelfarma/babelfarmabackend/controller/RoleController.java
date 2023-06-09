@@ -19,12 +19,12 @@ public class RoleController {
     @GetMapping("/roles")
     public ResponseEntity<List<Role>> getAllRoles(){
         List<Role> roles = roleRepository.findAll();
-        return new ResponseEntity<List<Role>>(roles, HttpStatus.OK);
+        return new ResponseEntity<>(roles, HttpStatus.OK);
     }
     @GetMapping("/roles/{id}")
     public ResponseEntity<Role> findById(@PathVariable("id") Long id){
         Role role = roleRepository.findByIdJPQL(id);
-        return new ResponseEntity<Role>(role, HttpStatus.OK);
+        return new ResponseEntity<>(role, HttpStatus.OK);
     }
     @PostMapping("/roles")
     public ResponseEntity<Role> createRole(@RequestBody Role role){
@@ -33,6 +33,6 @@ public class RoleController {
                     role.getRole()
                 )
         );
-        return new ResponseEntity<Role>(newRole, HttpStatus.CREATED);
+        return new ResponseEntity<>(newRole, HttpStatus.CREATED);
     }
 }

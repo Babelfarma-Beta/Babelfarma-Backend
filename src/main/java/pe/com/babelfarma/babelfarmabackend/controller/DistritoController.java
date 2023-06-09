@@ -17,23 +17,23 @@ public class DistritoController {
     @Autowired
     private DistritoRepository distritoRepository;
     @GetMapping("/distritos")
-    private ResponseEntity<List<Distrito>> getAllDistritos(){
+    public ResponseEntity<List<Distrito>> getAllDistritos(){
         List<Distrito> distritos = distritoRepository.findAll();
-        return new ResponseEntity<List<Distrito>>(distritos, HttpStatus.OK);
+        return new ResponseEntity<>(distritos, HttpStatus.OK);
     }
     @GetMapping("/distritos/{id}")
     public ResponseEntity<Distrito> findById(@PathVariable("id") Long id){
         Distrito distrito = distritoRepository.findByIdJPQL(id);
-        return new ResponseEntity<Distrito>(distrito, HttpStatus.OK);
+        return new ResponseEntity<>(distrito, HttpStatus.OK);
     }
     @PostMapping("/distritos")
-    private ResponseEntity<Distrito> createDistrito(@RequestBody Distrito distrito){
+    public ResponseEntity<Distrito> createDistrito(@RequestBody Distrito distrito){
         Distrito newDistrito =
                 distritoRepository.save(new Distrito(
                         distrito.getNombreDistrito()
                 )
         );
-        return new ResponseEntity<Distrito>(newDistrito, HttpStatus.CREATED);
+        return new ResponseEntity<>(newDistrito, HttpStatus.CREATED);
     }
     @PutMapping("distritos/{id}")
     public ResponseEntity<Distrito> updateDistrito(
@@ -42,7 +42,7 @@ public class DistritoController {
         Distrito distritoUpdate = distritoRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("No se encontró el distrito con id: " + id));
         distritoUpdate.setNombreDistrito(distrito.getNombreDistrito());
-        return new ResponseEntity<Distrito>(distritoRepository.save(distritoUpdate), HttpStatus.OK);
+        return new ResponseEntity<>(distritoRepository.save(distritoUpdate), HttpStatus.OK);
     }
     @DeleteMapping("distritos/{id}")
     public ResponseEntity<HttpStatus> deleteDistrito(@PathVariable("id") Long id){

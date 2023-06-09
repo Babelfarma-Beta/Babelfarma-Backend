@@ -38,19 +38,10 @@ public class ProductoController {
     @GetMapping("/productos")
     public ResponseEntity<List<Producto>> getAllProductos(){
         List<Producto> productos = new ArrayList<>();
-        List<Producto> productosAux = new ArrayList<>();
+        List<Producto> productosAux;
 
         productosAux=productoRepository.findAll();
-
-        if(productosAux.size()>0){
-            productosAux.stream().forEach((p)->{
-                byte[]imageDescompressed = Util.decompressZLib(p.getPicture());
-                p.setPicture(imageDescompressed);
-                productos.add(p);
-            });
-        }
-
-        return new ResponseEntity<>(productos, HttpStatus.OK);
+        return getListResponseEntity(productos, productosAux);
     }
 
     @Transactional(readOnly=true)
@@ -58,26 +49,17 @@ public class ProductoController {
     public ResponseEntity<List<Producto>> getProductosPrecio(){
 
         List<Producto> productos= new ArrayList<>();
-        List<Producto> productosAux = new ArrayList<>();
+        List<Producto> productosAux;
 
         productosAux=productoRepository.ListProductoPrecioJPQL();
-
-
-        if(productosAux.size()>0){
-            productosAux.stream().forEach((p)->{
-                byte[]imageDescompressed = Util.decompressZLib(p.getPicture());
-                p.setPicture(imageDescompressed);
-                productos.add(p);
-            });
-        }
-        return new ResponseEntity<>(productos, HttpStatus.OK);
+        return getListResponseEntity(productos, productosAux);
     }
 
     @GetMapping("/productos/id/{id}")
     public ResponseEntity<Producto> getProductoById(@PathVariable("id") Long id){
         Producto producto=productoRepository.getById(id);
 
-        return new ResponseEntity<Producto>(producto, HttpStatus.OK);
+        return new ResponseEntity<>(producto, HttpStatus.OK);
     }
 
     @PostMapping("/productosregistrados/{idFarmacia}")
@@ -142,37 +124,22 @@ public class ProductoController {
     @GetMapping("/productos/nombre/{producto}")
     public ResponseEntity<List<Producto>> getProductosSearch(@PathVariable("producto") String p){
         List<Producto> productos= new ArrayList<>();
-        List<Producto> productosAux = new ArrayList<>();
+        List<Producto> productosAux;
 
         productosAux=productoRepository.findProductoByNameSQL(p);
 
-        if(productosAux.size()>0){
-            productosAux.stream().forEach((producto)->{
-                byte[]imageDescompressed = Util.decompressZLib(producto.getPicture());
-                producto.setPicture(imageDescompressed);
-                productos.add(producto);
-            });
-        }
-        return new ResponseEntity<>(productos, HttpStatus.OK);
+        return getListResponseEntity(productos, productosAux);
     }
-
 
     @Transactional(readOnly=true)
     @GetMapping("/productos/categoria/{categoria}")
     public ResponseEntity<List<Producto>> ListarPorCategoria(@PathVariable("categoria") String c){
         List<Producto> productos= new ArrayList<>();
-        List<Producto> productosAux = new ArrayList<>();
+        List<Producto> productosAux;
 
         productosAux=productoRepository.findProductoByCategoria(c);
 
-        if(productosAux.size()>0){
-            productosAux.stream().forEach((p)->{
-                byte[]imageDescompressed = Util.decompressZLib(p.getPicture());
-                p.setPicture(imageDescompressed);
-                productos.add(p);
-            });
-        }
-        return new ResponseEntity<>(productos, HttpStatus.OK);
+        return getListResponseEntity(productos, productosAux);
     }
 
     @GetMapping("/productos/stock")
@@ -183,18 +150,33 @@ public class ProductoController {
 
     @Transactional(readOnly=true)
     @GetMapping("/productos/farmacia/{id}")
-    public ResponseEntity<List<Producto>> getProductoFarmacia(@PathVariable("id")long id){
+    public ResponseEntity<List<Producto>> getProductoFarmacia(@PathVariable("id")long id, @RequestParam("status") String status){
         List<Producto> productos= new ArrayList<>();
         List<Producto> productosAux = new ArrayList<>();
 
-        productosAux=productoRepository.ListarProductoCadaFarmacia(id);
+        if(status.equals("Todos")) {
+            productosAux = productoRepository.ListarProductoCadaFarmacia(id);
+        }
+        if(status.equals("Activos")){
+            productosAux=productoRepository.ListarProductoCadaFarmaciaYActivo(id);
+        }
+        if(status.equals("Inactivos")) {
+            productosAux = productoRepository.ListarProductoCadaFarmaciaYNoActivo(id);
+        }
 
-        if(productosAux.size()>0){
-            productosAux.stream().forEach((p)->{
-                byte[]imageDescompressed = Util.decompressZLib(p.getPicture());
-                p.setPicture(imageDescompressed);
-                productos.add(p);
+        return getListResponseEntity(productos, productosAux);
+    }
+
+    private ResponseEntity<List<Producto>> getListResponseEntity(List<Producto> productos, List<Producto> productosAux) {
+        if(!productosAux.isEmpty()){
+            productosAux.forEach(producto->{
+                byte[]imageDescompressed = Util.decompressZLib(producto.getPicture());
+                producto.setPicture(imageDescompressed);
+                productos.add(producto);
             });
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(productos, HttpStatus.OK);
     }

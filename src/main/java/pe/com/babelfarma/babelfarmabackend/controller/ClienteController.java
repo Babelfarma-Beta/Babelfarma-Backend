@@ -122,7 +122,6 @@ public class ClienteController {
     }
 
 
-
     @DeleteMapping("/clientes/{id}")
     public ResponseEntity<HttpStatus> deleteCliente(@PathVariable("id") Long id){
         clienteRepository.deleteById(id);
