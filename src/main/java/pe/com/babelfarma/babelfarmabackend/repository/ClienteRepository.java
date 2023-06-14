@@ -3,10 +3,9 @@ package pe.com.babelfarma.babelfarmabackend.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import pe.com.babelfarma.babelfarmabackend.entities.Cliente;
+import pe.com.babelfarma.babelfarmabackend.model.Cliente;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ClienteRepository
     extends JpaRepository<Cliente, Long> {

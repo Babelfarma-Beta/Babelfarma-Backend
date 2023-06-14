@@ -1,10 +1,7 @@
-package pe.com.babelfarma.babelfarmabackend.entities;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package pe.com.babelfarma.babelfarmabackend.model;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name="cliente")

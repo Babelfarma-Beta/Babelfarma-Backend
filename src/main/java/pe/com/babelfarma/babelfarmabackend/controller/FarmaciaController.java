@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import pe.com.babelfarma.babelfarmabackend.entities.Farmacia;
+import pe.com.babelfarma.babelfarmabackend.model.Farmacia;
 import pe.com.babelfarma.babelfarmabackend.exception.ResourceNotFoundException;
-import pe.com.babelfarma.babelfarmabackend.repository.FarmaciaRepository;
+import pe.com.babelfarma.babelfarmabackend.service.FarmaciaService;
 
 import java.util.List;
 
@@ -18,32 +18,32 @@ import java.util.List;
 public class FarmaciaController {
 
     @Autowired
-    private FarmaciaRepository farmaciaRepository;
+    private FarmaciaService farmaciaService;
 
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @GetMapping("/farmacias")
     public ResponseEntity<List<Farmacia>> getAllFarmacias(){
-        List<Farmacia> farmacias = farmaciaRepository.findAll();
+        List<Farmacia> farmacias = farmaciaService.findAll();
         return new ResponseEntity<>(farmacias, HttpStatus.OK);
     }
     @GetMapping("/farmacias/buscarporproducto/{id}")
     public ResponseEntity<Farmacia> findByProducto(
             @PathVariable("id") Long id){
-        Farmacia farmacia = farmaciaRepository.farmaciaPorProducto(id);
+        Farmacia farmacia = farmaciaService.farmaciaPorProducto(id);
         return new ResponseEntity<>(farmacia, HttpStatus.OK);
     }
     @Transactional(readOnly = true)
     @GetMapping("/farmacias/ruc/{ruc}/correo/{correo}")
     public ResponseEntity<Farmacia> findByCorreoYContraseña(@PathVariable("ruc") Long ruc,
                                                             @PathVariable("correo") String correoContacto){
-        Farmacia farmacia = farmaciaRepository.findByRucyCorreo(ruc, correoContacto);
+        Farmacia farmacia = farmaciaService.findByRucyCorreo(ruc, correoContacto);
         return new ResponseEntity<>(farmacia, HttpStatus.OK);
     }
     @GetMapping("/farmacias/buscarid/{buscarid}")
     public ResponseEntity<Farmacia> findById(
             @PathVariable("buscarid") Long id){
-       Farmacia farmacia = farmaciaRepository.findByIdJPQL(id);
+       Farmacia farmacia = farmaciaService.findByIdJPQL(id);
 
         return new ResponseEntity<>(farmacia, HttpStatus.OK);
     }
@@ -52,7 +52,7 @@ public class FarmaciaController {
             @PathVariable("direccion") String direccion
     ){
 
-        List<Farmacia> farmacias = farmaciaRepository.findByDireccionContainingSQL(direccion);
+        List<Farmacia> farmacias = farmaciaService.findByDireccionContainingSQL(direccion);
 
         return new ResponseEntity<>(farmacias, HttpStatus.OK);
     }
@@ -62,7 +62,7 @@ public class FarmaciaController {
             @PathVariable("nombre") String nombreEstablecimiento
     ){
 
-        List<Farmacia> farmacias = farmaciaRepository.findByNombreEstablecimientoContainingSQL(nombreEstablecimiento);
+        List<Farmacia> farmacias = farmaciaService.findByNombreEstablecimientoContainingSQL(nombreEstablecimiento);
 
         return new ResponseEntity<>(farmacias, HttpStatus.OK);
     }
@@ -71,14 +71,14 @@ public class FarmaciaController {
             @PathVariable("distrito") String distrito
     ){
 
-        List<Farmacia> farmacias = farmaciaRepository.findByDistritoContainingJPQL(distrito);
+        List<Farmacia> farmacias = farmaciaService.findByDistritoContainingJPQL(distrito);
 
         return new ResponseEntity<>(farmacias, HttpStatus.OK);
     }
     @GetMapping("/farmacias/productos")
     public ResponseEntity<List<String>> findProductosByStock(){
 
-        List<String> farmacias = farmaciaRepository.findProducsByStock();
+        List<String> farmacias = farmaciaService.findProducsByStock();
 
         return new ResponseEntity<>(farmacias, HttpStatus.OK);
     }
@@ -88,12 +88,12 @@ public class FarmaciaController {
         String hashedPassword = passwordEncoder.encode(farmacia.getContraseña());
         farmacia.setContraseña(hashedPassword);
         String correo = farmacia.getCorreoContacto();
-        if(farmaciaRepository.existsFarmaciaByCorreoContacto(correo)) {
+        if(farmaciaService.existsFarmaciaByCorreoContacto(correo)) {
             return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
         }
         else {
             Farmacia newFarmacia =
-                    farmaciaRepository.save(new Farmacia(
+                    farmaciaService.save(new Farmacia(
                                     farmacia.getRuc(),
                                     farmacia.getNombresDuenio(),
                                     farmacia.getApellidosDuenio(),
@@ -113,7 +113,7 @@ public class FarmaciaController {
     public ResponseEntity<Farmacia> updateFarmacia(
             @PathVariable("id") Long id,
             @RequestBody Farmacia farmacia){
-        Farmacia farmaciaUpdate = farmaciaRepository.findById(id)
+        Farmacia farmaciaUpdate = farmaciaService.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("No se encontró la farmacia con id: " + id));
         farmaciaUpdate.setRuc(farmacia.getRuc());
         farmaciaUpdate.setNombresDuenio(farmacia.getNombresDuenio());
@@ -129,11 +129,11 @@ public class FarmaciaController {
             farmaciaUpdate.setContraseña(passwordEncoder.encode(password));
         }
 
-        return new ResponseEntity<>(farmaciaRepository.save(farmaciaUpdate), HttpStatus.OK);
+        return new ResponseEntity<>(farmaciaService.save(farmaciaUpdate), HttpStatus.OK);
     }
     @DeleteMapping("/farmacias/{id}")
     public ResponseEntity<HttpStatus> deleteFarmacia(@PathVariable("id") Long id){
-        farmaciaRepository.deleteById(id);
+        farmaciaService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -142,7 +142,7 @@ public class FarmaciaController {
     public ResponseEntity<Farmacia> findByCorreoAndContraseña(@PathVariable("correo") String correo,
                                                              @PathVariable("contraseña") String contraseña){
 
-        Farmacia farmacia = farmaciaRepository.findByCorreoContacto(correo);
+        Farmacia farmacia = farmaciaService.findByCorreoContacto(correo);
 
         if (farmacia == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

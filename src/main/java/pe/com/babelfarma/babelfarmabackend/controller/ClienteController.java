@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import pe.com.babelfarma.babelfarmabackend.exception.ResourceNotFoundException;
-import pe.com.babelfarma.babelfarmabackend.repository.ClienteRepository;
-import pe.com.babelfarma.babelfarmabackend.entities.Cliente;
+import pe.com.babelfarma.babelfarmabackend.model.Cliente;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import pe.com.babelfarma.babelfarmabackend.service.ClienteService;
 
 import java.util.List;
 
@@ -17,25 +17,25 @@ import java.util.List;
 @RequestMapping("/api")
 public class ClienteController {
     @Autowired
-    private ClienteRepository clienteRepository;
+    private ClienteService clienteService;
 
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @GetMapping("/clientes")
     public ResponseEntity<List<Cliente>> getAllClientes(){
-        List<Cliente> clientes = clienteRepository.findAll();
+        List<Cliente> clientes = clienteService.findAll();
         return new ResponseEntity<>(clientes, HttpStatus.OK);
     }
     @GetMapping("/clientes/id/{id}")
     public ResponseEntity<Cliente> findById(@PathVariable("id") Long id){
-        Cliente cliente = clienteRepository.findByIdJPQL(id);
+        Cliente cliente = clienteService.findByIdJPQL(id);
         return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
     @Transactional(readOnly = true)
     @GetMapping("/clientes/dni/{dni}/correo/{correo}")
     public ResponseEntity<Cliente> findByDNINum(@PathVariable("dni") int dni,
                                                 @PathVariable("correo") String correo){
-        Cliente cliente = clienteRepository.findByDniJPQL(dni, correo);
+        Cliente cliente = clienteService.findByDniJPQL(dni, correo);
         return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
 
@@ -44,7 +44,7 @@ public class ClienteController {
     public ResponseEntity<Cliente> findByCorreoAndContraseña(@PathVariable("correo") String correo,
                                                              @PathVariable("contraseña") String contraseña){
 
-        Cliente cliente = clienteRepository.findByCorreo(correo);
+        Cliente cliente = clienteService.findByCorreo(correo);
 
         if (cliente == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -61,7 +61,7 @@ public class ClienteController {
 
     @GetMapping("/clientes/sexo/{sexo}")
     public ResponseEntity<List<Cliente>> findBySexo(@PathVariable("sexo") String sexo){
-        List<Cliente> clientes = clienteRepository.findBySexoJPQL(sexo);
+        List<Cliente> clientes = clienteService.findBySexoJPQL(sexo);
         return new ResponseEntity<>(clientes, HttpStatus.OK);
     }
 
@@ -70,12 +70,12 @@ public class ClienteController {
         String hashedPassword = passwordEncoder.encode(cliente.getContraseña());
         cliente.setContraseña(hashedPassword);
         String correo = cliente.getCorreo();
-        if(clienteRepository.existsClienteByCorreo(correo)) {
+        if(clienteService.existsClienteByCorreo(correo)) {
             return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
         }
         else {
             Cliente newCliente =
-                    clienteRepository.save(new Cliente(
+                    clienteService.save(new Cliente(
                                     cliente.getDni(),
                                     cliente.getNombres(),
                                     cliente.getApellidoPaterno(),
@@ -99,7 +99,7 @@ public class ClienteController {
     public ResponseEntity<Cliente> updateCliente(
             @PathVariable("id") Long id,
             @RequestBody Cliente cliente){
-        Cliente clienteUpdate = clienteRepository.findById(id)
+        Cliente clienteUpdate = clienteService.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("No se encontró el cliente con id: " + id));
         clienteUpdate.setDni(cliente.getDni());
         clienteUpdate.setNombres(cliente.getNombres());
@@ -118,13 +118,13 @@ public class ClienteController {
             clienteUpdate.setContraseña(passwordEncoder.encode(password));
         }
 
-        return new ResponseEntity<>(clienteRepository.save(clienteUpdate), HttpStatus.OK);
+        return new ResponseEntity<>(clienteService.save(clienteUpdate), HttpStatus.OK);
     }
 
 
     @DeleteMapping("/clientes/{id}")
     public ResponseEntity<HttpStatus> deleteCliente(@PathVariable("id") Long id){
-        clienteRepository.deleteById(id);
+        clienteService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -1,8 +1,8 @@
-package pe.com.babelfarma.babelfarmabackend.entities;
+package pe.com.babelfarma.babelfarmabackend.dto;
 
 import java.util.*;
 
-public class VentaView {
+public class VentaViewDto {
     private Long id;
     private Date fecha;
     private String cliente;
@@ -12,7 +12,7 @@ public class VentaView {
     private float precioTotal;
 
 
-    public VentaView(Long id, Date fecha, String cliente, String producto, float precioUnit, int cantidad, float precioTotal) {
+    public VentaViewDto(Long id, Date fecha, String cliente, String producto, float precioUnit, int cantidad, float precioTotal) {
         this.id = id;
         this.fecha = fecha;
         this.cliente = cliente;

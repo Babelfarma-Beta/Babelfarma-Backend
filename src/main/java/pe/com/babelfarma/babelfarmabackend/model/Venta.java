@@ -1,4 +1,4 @@
-package pe.com.babelfarma.babelfarmabackend.entities;
+package pe.com.babelfarma.babelfarmabackend.model;
 
 import javax.persistence.*;
 import java.util.Date;

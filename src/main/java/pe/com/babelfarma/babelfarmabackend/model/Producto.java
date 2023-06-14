@@ -1,9 +1,6 @@
-package pe.com.babelfarma.babelfarmabackend.entities;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package pe.com.babelfarma.babelfarmabackend.model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity

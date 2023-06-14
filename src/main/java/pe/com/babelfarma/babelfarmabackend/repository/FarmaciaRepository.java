@@ -3,7 +3,7 @@ package pe.com.babelfarma.babelfarmabackend.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import pe.com.babelfarma.babelfarmabackend.entities.Farmacia;
+import pe.com.babelfarma.babelfarmabackend.model.Farmacia;
 import java.util.List;
 
 public interface FarmaciaRepository extends JpaRepository<Farmacia, Long> {

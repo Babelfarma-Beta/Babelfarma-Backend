@@ -1,6 +1,4 @@
-package pe.com.babelfarma.babelfarmabackend.entities;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+package pe.com.babelfarma.babelfarmabackend.model;
 
 import javax.persistence.*;
 import java.io.Serializable;

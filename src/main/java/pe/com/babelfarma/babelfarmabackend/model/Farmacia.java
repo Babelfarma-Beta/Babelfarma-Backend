@@ -1,8 +1,6 @@
-package pe.com.babelfarma.babelfarmabackend.entities;
+package pe.com.babelfarma.babelfarmabackend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.annotations.ColumnTransformer;
 
 import javax.persistence.*;
 import java.util.ArrayList;

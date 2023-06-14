@@ -2,7 +2,7 @@ package pe.com.babelfarma.babelfarmabackend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import pe.com.babelfarma.babelfarmabackend.entities.Categoria;
+import pe.com.babelfarma.babelfarmabackend.model.Categoria;
 
 import java.util.List;
 

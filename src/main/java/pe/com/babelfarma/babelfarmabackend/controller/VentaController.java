@@ -5,10 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import pe.com.babelfarma.babelfarmabackend.entities.VentaView;
+import pe.com.babelfarma.babelfarmabackend.dto.VentaViewDto;
 import pe.com.babelfarma.babelfarmabackend.exception.ResourceNotFoundException;
-import pe.com.babelfarma.babelfarmabackend.repository.VentaRepository;
-import pe.com.babelfarma.babelfarmabackend.entities.Venta;
+import pe.com.babelfarma.babelfarmabackend.model.Venta;
+import pe.com.babelfarma.babelfarmabackend.service.VentaService;
 
 import java.util.List;
 
@@ -17,29 +17,29 @@ import java.util.List;
 @RequestMapping("/api")
 public class VentaController {
     @Autowired
-    private VentaRepository ventaRepository;
+    private VentaService ventaService;
     @GetMapping("/ventas")
     public ResponseEntity<List<Venta>> getAllVentas(){
-        List<Venta> ventas = ventaRepository.findAll();
+        List<Venta> ventas = ventaService.findAll();
         return new ResponseEntity<>(ventas, HttpStatus.OK);
     }
     @Transactional(readOnly=true)
     @GetMapping("/ventas/buscarporfarmacia/{farmaciaId}")
-    public ResponseEntity<List<VentaView>> getVentasByFarmaciaId(
+    public ResponseEntity<List<VentaViewDto>> getVentasByFarmaciaId(
             @PathVariable("farmaciaId") Long id
     ){
-        List<VentaView> ventas = ventaRepository.findByFarmaciaId(id);
+        List<VentaViewDto> ventas = ventaService.findByFarmaciaId(id);
 
         return new ResponseEntity<>(ventas, HttpStatus.OK);
     }
 
     @Transactional(readOnly=true)
     @GetMapping("/ventas/buscarporcliente/{nombre}/{idFarmacia}")
-    public ResponseEntity<List<VentaView>> getVentasByNombreCliente(
+    public ResponseEntity<List<VentaViewDto>> getVentasByNombreCliente(
             @PathVariable("nombre") String nombre,
             @PathVariable("idFarmacia") Long idFarmacia
     ){
-        List<VentaView> ventas = ventaRepository.findByNombreCliente(nombre,idFarmacia);
+        List<VentaViewDto> ventas = ventaService.findByNombreCliente(nombre,idFarmacia);
         return new ResponseEntity<>(ventas, HttpStatus.OK);
     }
 
@@ -48,24 +48,24 @@ public class VentaController {
     public ResponseEntity<List<Venta>> getVentasByIdCliente(
             @PathVariable("idCliente") Long idCliente
     ){
-        List<Venta> ventas = ventaRepository.findByIdCliente(idCliente);
+        List<Venta> ventas = ventaService.findByIdCliente(idCliente);
         return new ResponseEntity<>(ventas, HttpStatus.OK);
     }
 
     @Transactional(readOnly=true)
     @GetMapping("/ventas/buscarpormes/{mes}/{idFarmacia}")
-    public ResponseEntity<List<VentaView>> getVentasByMes(
+    public ResponseEntity<List<VentaViewDto>> getVentasByMes(
             @PathVariable("mes") int mes,
             @PathVariable("idFarmacia") Long idFarmacia
     ){
-        List<VentaView> ventas = ventaRepository.findByMes(mes,idFarmacia);
+        List<VentaViewDto> ventas = ventaService.findByMes(mes,idFarmacia);
         return new ResponseEntity<>(ventas, HttpStatus.OK);
     }
 
     @PostMapping("/ventas")
     public ResponseEntity<Venta> createVenta(@RequestBody Venta venta){
         Venta newVenta =
-                ventaRepository.save(new Venta(
+                ventaService.save(new Venta(
                                 venta.getFecha(),
                                 venta.getIdCliente(),
                                 venta.getIdFarmacia(),
@@ -83,16 +83,16 @@ public class VentaController {
     public ResponseEntity<Venta> updateVenta(
             @PathVariable("id") Long id,
             @RequestBody Venta venta){
-        Venta ventaUpdate = ventaRepository.findById(id)
+        Venta ventaUpdate = ventaService.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("No se encontró el cliente con id: " + id));
         ventaUpdate.setFecha(venta.getFecha());
-        return new ResponseEntity<>(ventaRepository.save(ventaUpdate), HttpStatus.OK);
+        return new ResponseEntity<>(ventaService.save(ventaUpdate), HttpStatus.OK);
     }
 
 
     @DeleteMapping("/ventas/{id}")
     public ResponseEntity<HttpStatus> deleteVenta(@PathVariable("id") Long id){
-        ventaRepository.deleteById(id);
+        ventaService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
